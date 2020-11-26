@@ -1,0 +1,13 @@
+.calculator {
+  padding: 3em;
+}
+
+.btn-primary {
+  margin: 2px;
+  width: 40px;
+  height: 40px;
+}
+
+#buttons {
+  width: 300px;
+}
