@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './css/calculator.css';
-import {Button, ButtonGroup, Row, Col, Container, Jumbotron} from 'react-bootstrap';
+import {Button, ButtonGroup, Row, Col, Container} from 'react-bootstrap';
 
 class Calculator extends Component {
   // Reader note: variables labelled front are basically what the user can see while the back number is held.
@@ -14,13 +14,10 @@ class Calculator extends Component {
     this.handleNum = this.handleNum.bind(this);
     this.handleOperator = this.handleOperator.bind(this);
     this.handleEquals = this.handleEquals.bind(this);
-    this.handleMinus = this.handleMinus.bind(this);
-    this.handlePlus = this.handlePlus.bind(this);
   }
 
   handleNum = function(e){
     if (!e.target.value) {return} // To stop it responded when you click the ButtonGroup area not the buttons
-    console.log(e.target.value);
     if (this.state.frontNum === '0' && e.target.value !== '.') {
       this.setState({frontNum: e.target.value});
     } else if (this.state.frontNum.includes('.') && e.target.value === '.') {
@@ -30,22 +27,6 @@ class Calculator extends Component {
     }
   }
 
-  handlePlus = function() {
-    if(this.state.operator === '') {
-      this.setState({backNum: this.state.frontNum});
-      this.setState({frontNum: '0'});
-    }
-    this.setState({operator: '+'});
-  }
-
-  handleMinus = function() {
-    if(this.state.operator  === '') {
-      this.setState({backNum: this.state.frontNum});
-      this.setState({frontNum: '0'});
-    }
-    this.setState({operator: '-'});
-  }
-
   handleEquals = function() {
     let frontFloat = parseFloat(this.state.frontNum);
     let backFloat = parseFloat(this.state.backNum);
@@ -53,6 +34,10 @@ class Calculator extends Component {
       frontFloat = frontFloat + backFloat;
     } else if (this.state.operator === '-') {
       frontFloat = backFloat - frontFloat;
+    } else if (this.state.operator === '×') {
+      frontFloat = backFloat * frontFloat;
+    } else if (this.state.operator === '÷') {
+      frontFloat = backFloat / frontFloat;
     }
     let frontOut = frontFloat.toString();
 
@@ -61,12 +46,23 @@ class Calculator extends Component {
     this.setState({operator: ''});
   }
 
+  handleClear = function() {
+    console.log('Clear');
+    this.setState({frontNum: '0'});
+    this.setState({backNum: '0'});
+    this.setState({operator: ''});
+  }
+
   handleOperator = function(e) {
     if (!e.target.value) {return} // To stop it responded when you click the ButtonGroup area not the buttons.
-    if (e.target.value === '+') {
-      this.handlePlus();
-    } else if (e.target.value === '-') {
-      this.handleMinus();
+    if(this.state.operator  === '') {
+      this.setState({backNum: this.state.frontNum});
+      this.setState({frontNum: '0'});
+    }
+    if (e.target.value !== '=' && e.target.value !== 'C') {
+      this.setState({operator: `${e.target.value}`})
+    } else if (e.target.value === 'C') {
+      this.handleClear();
     } else {
       this.handleEquals();
     }
@@ -75,43 +71,51 @@ class Calculator extends Component {
   render() {
     return (
       <div className="calculator">
-      <div data-testid="test-message">Calculator</div>
-        <Jumbotron data-testid="display" id="display">
-          {this.state.frontNum}
-        </ Jumbotron>
-        <Container>
-          <Row>
-            <ButtonGroup id="buttons" onClick={this.handleNum} size="sm" >
-              <Col md={6}>
-                <Row>
-                  <Button value='7'>7</Button>
-                  <Button value='8'>8</Button>
-                  <Button value='9'>9</Button>
-                </ Row>
-                <Row>
-                  <Button value='4'>4</Button>
-                  <Button value='5'>5</Button>
-                  <Button value='6'>6</Button>
-                </ Row>
-                <Row>
-                  <Button value="1">1</Button>
-                  <Button value="2">2</Button>
-                  <Button value='3'>3</Button>
-                </ Row>
-                <Row>
-                  <Button value="0">0</Button>
-                  <Button value=".">.</Button>
-                </ Row>
-              </ Col>
-              </ ButtonGroup>
-            <ButtonGroup id="buttons" onClick={this.handleOperator} size="sm" >
-              <Col md={2}>
-                <Row><Button value='+'>+</Button></Row>
-                <Row><Button value='-'>-</Button></Row>
-                <Row><Button value='='>=</Button></Row>
-              </Col>
+        <h2 data-testid="test-message">Test Calculator</h2>
+        <div id="displayBox">
+          <h1 data-testid="display" id="display">
+            {this.state.frontNum}
+          </ h1>
+        </div>
+        <Container fluid>
+          <ButtonGroup id="buttons"  onClick={this.handleNum}>
+            <Col>
+              <Row>
+                <Button value='7'>7</Button>
+                <Button value='8'>8</Button>
+                <Button value='9'>9</Button>
+              </ Row>
+              <Row>
+                <Button value='4'>4</Button>
+                <Button value='5'>5</Button>
+                <Button value='6'>6</Button>
+              </ Row>
+              <Row>
+                <Button value="1">1</Button>
+                <Button value="2">2</Button>
+                <Button value='3'>3</Button>
+              </ Row>
+              <Row>
+                <Button value="0">0</Button>
+                <Button value=".">.</Button>
+              </ Row>
+            </ Col>
             </ ButtonGroup>
-          </ Row>
+          <ButtonGroup id="buttons" onClick={this.handleOperator} size="sm" >
+            <Col>
+              <Row>
+                <Button value='+'>+</Button>
+                <Button value='×'>×</Button>
+              </Row>
+              <Row>
+                <Button value='-'>-</Button>
+                <Button value='÷'>÷</Button>
+              </Row>
+              <Row><Button value='='>=</Button></Row>
+              <Row><Button value='C'>C</Button></Row>
+            </Col>
+
+          </ ButtonGroup>
         </ Container>
       </ div>
     );
