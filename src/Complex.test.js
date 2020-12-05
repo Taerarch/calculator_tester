@@ -33,14 +33,14 @@ describe("Fringe case button presses", () => {
     expect(display.innerHTML).toBe('-1');
   });
 
-  it("testing swapping operators mid equation 2+-3=-1", () => {
+  it("testing swapping operators mid equation 1-+7=8", () => {
     const {queryByTestId, queryByText} = render(<Calculator />);
-    fireEvent.click(queryByText('2'));
-    fireEvent.click(queryByText('+'));
+    fireEvent.click(queryByText('1'));
     fireEvent.click(queryByText('-'));
-    fireEvent.click(queryByText('3'));
+    fireEvent.click(queryByText('+'));
+    fireEvent.click(queryByText('7'));
     fireEvent.click(queryByText('='));
     const display = queryByTestId('display');
-    expect(display.innerHTML).toBe('-1');
+    expect(display.innerHTML).toBe('8');
   });
 })
